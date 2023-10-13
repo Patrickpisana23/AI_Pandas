@@ -2650,3 +2650,273 @@ def analyze_data(dfs: list[pd.DataFrame]) ->dict:
 
 [200 rows x 2 columns]}
 2023-10-13 16:23:28 [INFO] Executed in: 35.01882457733154s
+2023-10-13 16:45:48 [INFO] Question: quiero saber el cliente con mas ventas en un grafico
+
+2023-10-13 16:45:48 [INFO] Running PandasAI with openai LLM...
+2023-10-13 16:45:48 [INFO] Prompt ID: 5315679a-51b0-4fee-80c4-543d6344bbfb
+2023-10-13 16:45:48 [INFO] Using prompt: 
+You are provided with the following pandas DataFrames:
+
+<dataframe>
+Dataframe dfs[0], with 64186 rows and 13 columns.
+This is the metadata of the dataframe dfs[0]:
+Fecha_venta,Nit,Nombre_Cliente,Tipo Cliente,Departamento,Vendedor,Sucursal,Categoría,Producto,Linea,Cantidad,Venta,Costos
+2020-01-02,806153817,ALKOSTO HIPERAHORRO,CADENA NACIONAL,ANTIOQUIA,DIEGO MORA POSADA,SUR,LACTEA,MANTEQUILLA SIN SAL,ESPARCIBLES,21,70847.91,46073.758332
+2020-01-02,811548593,ALMACENES EXITO S.A,CADENA NACIONAL,ANTIOQUIA,DIEGO MORA POSADA,SUR,LACTEA,MANTEQUILLA SIN SAL,ESPARCIBLES,1,3373.71,2193.988492
+2020-01-02,832042127,61PRADO EUROPEAN GUESTHOUSE,CADENA REGIONAL,ANTIOQUIA,DIEGO MORA POSADA,SUR,LACTEA,MANTEQUILLA SIN SAL,ESPARCIBLES,9,30363.39,19745.896428
+2020-01-02,883582190,ABASTECEMOS DE OCCIDENTE S.A,CADENA REGIONAL,ANTIOQUIA,DIEGO MORA POSADA,SUR,LACTEA,MANTEQUILLA SIN SAL,ESPARCIBLES,5,16868.55,10969.94246
+2020-01-02,877794213,AGROSANAR SAS,CADENA REGIONAL,ANTIOQUIA,DIEGO MORA POSADA,SUR,LACTEA,MANTEQUILLA SIN SAL,ESPARCIBLES,20,67474.2,43879.76984
+</dataframe>
+
+<conversation>
+User 1: quiero saber el cliente con mas ventas en un grafico
+
+</conversation>
+
+This is the initial python code to be updated:
+```python
+# TODO import all the dependencies required
+import pandas as pd
+
+def analyze_data(dfs: list[pd.DataFrame]) -> dict:
+    """
+    Analyze the data
+    1. Prepare: Preprocessing and cleaning data if necessary
+    2. Process: Manipulating data for analysis (grouping, filtering, aggregating, etc.)
+    3. Analyze: Conducting the actual analysis (if the user asks to plot a chart save it to an image in temp_chart.png and do not show the chart.)
+    At the end, return a dictionary of:
+    - type (possible values "string", "number", "dataframe", "plot")
+    - value (can be a string, a dataframe or the path of the plot, NOT a dictionary)
+    Examples: 
+        { "type": "string", "value": "The highest salary is $9,000." }
+        or
+        { "type": "number", "value": 125 }
+        or
+        { "type": "dataframe", "value": pd.DataFrame({...}) }
+        or
+        { "type": "plot", "value": "temp_chart.png" }
+    """
+```
+
+Using the provided dataframes (`dfs`), update the python code based on the last question in the conversation.
+
+Updated code:
+
+2023-10-13 16:46:27 [INFO] Code generated:
+```
+# TODO import all the dependencies required
+import pandas as pd
+import matplotlib.pyplot as plt
+
+def analyze_data(dfs: list[pd.DataFrame]) -> dict:
+    """
+    Analyze the data
+    1. Prepare: Preprocessing and cleaning data if necessary
+    2. Process: Manipulating data for analysis (grouping, filtering, aggregating, etc.)
+    3. Analyze: Conducting the actual analysis (if the user asks to plot a chart save it to an image in temp_chart.png and do not show the chart.)
+    At the end, return a dictionary of:
+    - type (possible values "string", "number", "dataframe", "plot")
+    - value (can be a string, a dataframe or the path of the plot, NOT a dictionary)
+    Examples: 
+        { "type": "string", "value": "The highest salary is $9,000." }
+        or
+        { "type": "number", "value": 125 }
+        or
+        { "type": "dataframe", "value": pd.DataFrame({...}) }
+        or
+        { "type": "plot", "value": "temp_chart.png" }
+    """
+    # Prepare
+    df = dfs[0].copy()
+    
+    # Process
+    sales_by_client = df.groupby('Nombre_Cliente')['Venta'].sum().reset_index()
+    sales_by_client = sales_by_client.sort_values('Venta', ascending=False)
+    
+    # Analyze
+    top_client = sales_by_client.iloc[0]['Nombre_Cliente']
+    top_sales = sales_by_client.iloc[0]['Venta']
+    
+    # Plot
+    plt.figure(figsize=(10, 6))
+    plt.bar(sales_by_client['Nombre_Cliente'], sales_by_client['Venta'])
+    plt.xlabel('Cliente')
+    plt.ylabel('Ventas')
+    plt.title('Ventas por Cliente')
+    plt.xticks(rotation=90)
+    plt.tight_layout()
+    plt.savefig('temp_chart.png')
+    plt.close()
+    
+    return {
+        "type": "plot",
+        "value": "temp_chart.png"
+    }
+```
+
+2023-10-13 16:46:27 [INFO] 
+Code running:
+```
+def analyze_data(dfs: list[pd.DataFrame]) ->dict:
+    """
+    Analyze the data
+    1. Prepare: Preprocessing and cleaning data if necessary
+    2. Process: Manipulating data for analysis (grouping, filtering, aggregating, etc.)
+    3. Analyze: Conducting the actual analysis (if the user asks to plot a chart save it to an image in temp_chart.png and do not show the chart.)
+    At the end, return a dictionary of:
+    - type (possible values "string", "number", "dataframe", "plot")
+    - value (can be a string, a dataframe or the path of the plot, NOT a dictionary)
+    Examples: 
+        { "type": "string", "value": "The highest salary is $9,000." }
+        or
+        { "type": "number", "value": 125 }
+        or
+        { "type": "dataframe", "value": pd.DataFrame({...}) }
+        or
+        { "type": "plot", "value": "temp_chart.png" }
+    """
+    df = dfs[0].copy()
+    sales_by_client = df.groupby('Nombre_Cliente')['Venta'].sum().reset_index()
+    sales_by_client = sales_by_client.sort_values('Venta', ascending=False)
+    top_client = sales_by_client.iloc[0]['Nombre_Cliente']
+    top_sales = sales_by_client.iloc[0]['Venta']
+    plt.figure(figsize=(10, 6))
+    plt.bar(sales_by_client['Nombre_Cliente'], sales_by_client['Venta'])
+    plt.xlabel('Cliente')
+    plt.ylabel('Ventas')
+    plt.title('Ventas por Cliente')
+    plt.xticks(rotation=90)
+    plt.tight_layout()
+    plt.savefig('temp_chart.png')
+    plt.close()
+    return {'type': 'plot', 'value': 'temp_chart.png'}
+        ```
+2023-10-13 16:46:45 [INFO] Answer: {'type': 'plot', 'value': 'temp_chart.png'}
+2023-10-13 16:46:46 [INFO] Executed in: 57.47380208969116s
+2023-10-13 16:47:15 [INFO] Question: quiero saber el cliente con mas ventas en una tabla
+
+2023-10-13 16:47:15 [INFO] Running PandasAI with openai LLM...
+2023-10-13 16:47:15 [INFO] Prompt ID: f37f9bb6-0237-4635-9ef3-9049435b3959
+2023-10-13 16:47:15 [INFO] Using prompt: 
+You are provided with the following pandas DataFrames:
+
+<dataframe>
+Dataframe dfs[0], with 64186 rows and 13 columns.
+This is the metadata of the dataframe dfs[0]:
+Fecha_venta,Nit,Nombre_Cliente,Tipo Cliente,Departamento,Vendedor,Sucursal,Categoría,Producto,Linea,Cantidad,Venta,Costos
+2020-01-02,832042127,61PRADO EUROPEAN GUEST...,CADENA REGIONAL,ANTIOQUIA,DIEGO MORA POSADA,SUR,LACTEA,MANTEQUILLA SIN SAL,ESPARCIBLES,9,30363.39,19745.896428
+2020-01-02,811548593,ALMACENES EXITO S.A...,CADENA NACIONAL,ANTIOQUIA,DIEGO MORA POSADA,SUR,LACTEA,MANTEQUILLA SIN SAL,ESPARCIBLES,1,3373.71,2193.988492
+2020-01-02,806153817,ALKOSTO HIPERAHORRO...,CADENA NACIONAL,ANTIOQUIA,DIEGO MORA POSADA,SUR,LACTEA,MANTEQUILLA SIN SAL,ESPARCIBLES,21,70847.91,46073.758332
+2020-01-02,877794213,AGROSANAR SAS...,CADENA REGIONAL,ANTIOQUIA,DIEGO MORA POSADA,SUR,LACTEA,MANTEQUILLA SIN SAL,ESPARCIBLES,20,67474.2,43879.76984
+2020-01-02,883582190,ABASTECEMOS DE OCCIDEN...,CADENA REGIONAL,ANTIOQUIA,DIEGO MORA POSADA,SUR,LACTEA,MANTEQUILLA SIN SAL,ESPARCIBLES,5,16868.55,10969.94246
+</dataframe>
+
+<conversation>
+User 1: quiero saber el cliente con mas ventas en una tabla
+
+</conversation>
+
+This is the initial python code to be updated:
+```python
+# TODO import all the dependencies required
+import pandas as pd
+
+def analyze_data(dfs: list[pd.DataFrame]) -> dict:
+    """
+    Analyze the data
+    1. Prepare: Preprocessing and cleaning data if necessary
+    2. Process: Manipulating data for analysis (grouping, filtering, aggregating, etc.)
+    3. Analyze: Conducting the actual analysis (if the user asks to plot a chart save it to an image in temp_chart.png and do not show the chart.)
+    At the end, return a dictionary of:
+    - type (possible values "string", "number", "dataframe", "plot")
+    - value (can be a string, a dataframe or the path of the plot, NOT a dictionary)
+    Examples: 
+        { "type": "string", "value": "The highest salary is $9,000." }
+        or
+        { "type": "number", "value": 125 }
+        or
+        { "type": "dataframe", "value": pd.DataFrame({...}) }
+        or
+        { "type": "plot", "value": "temp_chart.png" }
+    """
+```
+
+Using the provided dataframes (`dfs`), update the python code based on the last question in the conversation.
+
+Updated code:
+
+2023-10-13 16:47:45 [INFO] Code generated:
+```
+# TODO import all the dependencies required
+import pandas as pd
+
+def analyze_data(dfs: list[pd.DataFrame]) -> dict:
+    """
+    Analyze the data
+    1. Prepare: Preprocessing and cleaning data if necessary
+    2. Process: Manipulating data for analysis (grouping, filtering, aggregating, etc.)
+    3. Analyze: Conducting the actual analysis (if the user asks to plot a chart save it to an image in temp_chart.png and do not show the chart.)
+    At the end, return a dictionary of:
+    - type (possible values "string", "number", "dataframe", "plot")
+    - value (can be a string, a dataframe or the path of the plot, NOT a dictionary)
+    Examples: 
+        { "type": "string", "value": "The highest salary is $9,000." }
+        or
+        { "type": "number", "value": 125 }
+        or
+        { "type": "dataframe", "value": pd.DataFrame({...}) }
+        or
+        { "type": "plot", "value": "temp_chart.png" }
+    """
+    # Prepare
+    df = dfs[0].copy()
+    
+    # Process
+    customer_sales = df.groupby('Nombre_Cliente')['Venta'].sum().reset_index()
+    customer_sales = customer_sales.sort_values('Venta', ascending=False)
+    
+    # Analyze
+    table = customer_sales.head(10)
+    
+    return {"type": "dataframe", "value": table}
+```
+
+2023-10-13 16:47:45 [INFO] 
+Code running:
+```
+def analyze_data(dfs: list[pd.DataFrame]) ->dict:
+    """
+    Analyze the data
+    1. Prepare: Preprocessing and cleaning data if necessary
+    2. Process: Manipulating data for analysis (grouping, filtering, aggregating, etc.)
+    3. Analyze: Conducting the actual analysis (if the user asks to plot a chart save it to an image in temp_chart.png and do not show the chart.)
+    At the end, return a dictionary of:
+    - type (possible values "string", "number", "dataframe", "plot")
+    - value (can be a string, a dataframe or the path of the plot, NOT a dictionary)
+    Examples: 
+        { "type": "string", "value": "The highest salary is $9,000." }
+        or
+        { "type": "number", "value": 125 }
+        or
+        { "type": "dataframe", "value": pd.DataFrame({...}) }
+        or
+        { "type": "plot", "value": "temp_chart.png" }
+    """
+    df = dfs[0].copy()
+    customer_sales = df.groupby('Nombre_Cliente')['Venta'].sum().reset_index()
+    customer_sales = customer_sales.sort_values('Venta', ascending=False)
+    table = customer_sales.head(10)
+    return {'type': 'dataframe', 'value': table}
+        ```
+2023-10-13 16:47:45 [INFO] Answer: {'type': 'dataframe', 'value':                        Nombre_Cliente         Venta
+308            COMPAÑIA DSIERRA S.A.S  2.902268e+07
+747   INVERSIONES VAQUITA EXPRESS SAS  2.851476e+07
+718                INDUCOLOMBIA S.A.S  2.815142e+07
+1190                REYES LOPEZ S.A.S  2.738211e+07
+1373   SUPERMERCADOS MERKAHORRO S.A.S  2.719224e+07
+296         COMERCIALIZADORA MERCADOS  2.682284e+07
+321           CONSUMAX DE URABA S.A.S  2.679586e+07
+270             CENCOSUD COLOMBIA S.A  2.674819e+07
+43       ABASTECEMOS DE OCCIDENTE S.A  2.668337e+07
+731             INVERSIONES EURO S.A.  2.623394e+07}
+2023-10-13 16:47:45 [INFO] Executed in: 30.23941659927368s
